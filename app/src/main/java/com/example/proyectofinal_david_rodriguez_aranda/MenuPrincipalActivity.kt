@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.proyectofinal_david_rodriguez_aranda.adapters.MesasAdapter
 import com.example.proyectofinal_david_rodriguez_aranda.databinding.ActivityMenuPrincipalBinding
+import com.example.proyectofinal_david_rodriguez_aranda.models.Camarero
 import com.example.proyectofinal_david_rodriguez_aranda.models.Mesa
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

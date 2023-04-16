@@ -4,15 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#575050"
+    android:background="@drawable/login_background"
     tools:context=".MenuPrincipalActivity">
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="283dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/caveat"
         android:text="MESAS"
+        android:textAlignment="center"
         android:textColor="#FFC107"
         android:textSize="100sp"
         android:textStyle="bold"

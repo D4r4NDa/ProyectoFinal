@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.view.isVisible
 import com.example.proyectofinal_david_rodriguez_aranda.databinding.ActivityEstadoMesaBinding
+import com.example.proyectofinal_david_rodriguez_aranda.models.Camarero
 import com.example.proyectofinal_david_rodriguez_aranda.models.Mesa
 
 class EstadoMesaActivity : AppCompatActivity() {
@@ -36,7 +37,7 @@ class EstadoMesaActivity : AppCompatActivity() {
 
         }else if(mesa?.estado==2) {
             binding.btAtenderMesa.isVisible= false
-            binding.tvMensajeEstadoMesa.text= "LA MESA ESTA SIENDO ATENDIDA POR\n${mesa?.camarero}"
+            binding.tvMensajeEstadoMesa.text= "LA MESA ESTA SIENDO ATENDIDA POR\nWIP"
 
         }
     }
