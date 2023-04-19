@@ -3,6 +3,7 @@ package com.example.proyectofinal_david_rodriguez_aranda
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.example.proyectofinal_david_rodriguez_aranda.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun selectUser() {
-        val i= Intent(this, SelectUserActivity::class.java)
+        val i = Intent(this, SelectUserActivity::class.java)
         startActivity(i)
     }
 
