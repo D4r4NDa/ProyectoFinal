@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Layout
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -90,7 +91,34 @@ class MenuPrincipalActivity : AppCompatActivity() {
     }
 
     private fun setListeners() {
+        navView.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.nav_profile -> {
+                    startActivity(Intent(this, UserConfigActivity::class.java).apply {
+                        putExtra("CAMARERO", camarero)
+                    })
+                    true
+                }
+                R.id.nav_settings -> {
+                    true
+                }
+                R.id.nav_logout -> {
+                    true
+                }
+                else -> true
+            }
+        }
 
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        if(toggle.onOptionsItemSelected(item)) {
+            return true
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     private fun traerMesas() {
