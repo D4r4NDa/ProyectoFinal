@@ -21,8 +21,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 
+/**
+ * En esta activity se completa el inicio de sesión, aquí se introduce la contraseña necesaria para acceder a la aplicación
+ * según el camarero seleccionado en la activity [SelectUserActivity]
+ */
 class LoginActivity : AppCompatActivity() {
-
+//***************************************************VARIABLES******************************************************************************************************************************************
     lateinit var binding: ActivityLoginBinding
     lateinit var db: FirebaseDatabase
     lateinit var storage: FirebaseStorage
@@ -31,6 +35,7 @@ class LoginActivity : AppCompatActivity() {
     var password= ""
     var camarero: Camarero?= null
 
+//****************************************************METODOS******************************************************************************************************************************************
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityLoginBinding.inflate(layoutInflater)
@@ -41,13 +46,22 @@ class LoginActivity : AppCompatActivity() {
         setListeners()
         recogerDatos()
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Método que coloca los listeners a los componentes necesarios para asignarles funcionalidad
+     */
     private fun setListeners() {
         binding.btAccess.setOnClickListener {
             login()
         }
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Este método se encarga de recoger los datos enviados por el intent de la activity [SelectUserActivity];
+     * en este caso es el camarero seleccionado, el cual se carga en la variable [camarero].
+     * Además también se asigna el email de dicho camarero a la variable [email], la cual se usará internamente para el inicio de sesión;
+     * después se muestra el nombre del camarero en un TextView y se llama al método [ponerImagen]
+     */
     private fun recogerDatos() {
         val extra= intent.extras
         camarero= extra?.getSerializable("CAMARERO") as Camarero?
@@ -56,7 +70,17 @@ class LoginActivity : AppCompatActivity() {
         email= camarero?.email.toString()
         ponerImagen(camarero?.email.toString())
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Este método se encarga de hacer la comprobación de las credenciales para el inicio de sesión.
+     * Primero toma la contraseña introducida en el campo de texto y la introduce en la variable [password];
+     * después comprueba que la contraseña no sea una cadena vacia, si lo es marca el error en el campo de texto.
+     * Si la contraseña no está vacia se conecta con el servicio de autentificación de Firebase para comprobar que el email y la contraseña
+     * son correctos; si lo son, se lanza la activity [MenuPrincipalActivity] con un intent que contiene el camarero con el que
+     * se ha iniciado sesión, después se limpia el campo de contraseña y se establece el estado del camarero a conectado.
+     *
+     * En caso de que las credenciales no sean correctas se muestra un dialogo indicándolo y no se continua con el inicio de sesión
+     */
     private fun login() {
         password= binding.etPasswordLogin.text.toString().trim()
         if(password.length <=0) {
@@ -88,7 +112,14 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Este método se encarga de comprobar si el camarero tiene una foto de perfil subida en Firebase.
+     * Tanto si la tiene como si no tras la comprobación se llamará al método [rellenarImagen] al cual se le pasará la imagen
+     * del camarero si la tiene, y si no se le pasará una imagen default
+     *
+     * @param email
+     */
     private fun ponerImagen(email: String) {
         //Comprobar si el usuario tiene imagen o no
         val ref= storage.reference
@@ -107,7 +138,13 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Este método se encarga de renderizar la imagen enviada desde el método [ponerImagen] en el ImageView correspondiente
+     * haciendo uso de la libreria Glide
+     *
+     * @param it
+     */
     private fun rellenarImagen(it: Uri?) {
         val requestOptions= RequestOptions().transform(CircleCrop())
         Glide.with(binding.ivLoginPicture.context)
@@ -116,11 +153,15 @@ class LoginActivity : AppCompatActivity() {
             .apply(requestOptions)
             .into(binding.ivLoginPicture)
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Esta sobreescritura del método [onDestroy] se encarga de establecer el estado el camarero a desconectado
+     * cuando esta activity se destruya
+     */
     override fun onDestroy() {
         super.onDestroy()
         camarero?.online = false
         db.getReference("camareros").child(camarero?.password.toString()).setValue(camarero)
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 }

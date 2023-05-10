@@ -15,22 +15,29 @@ import com.example.proyectofinal_david_rodriguez_aranda.models.Camarero
 import com.google.firebase.storage.FirebaseStorage
 
 class UserConfigActivity : AppCompatActivity() {
-
+//***************************************************VARIABLES******************************************************************************************************************************************
     lateinit var binding: ActivityUserConfigBinding
     lateinit var storage: FirebaseStorage
     var camarero: Camarero?= null
-
+//****************************************************METODOS******************************************************************************************************************************************
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityUserConfigBinding.inflate(layoutInflater)
         storage= FirebaseStorage.getInstance("gs://proyectofinal-29247.appspot.com/")
-        camarero= intent.extras?.getSerializable("CAMARERO") as Camarero?
         setContentView(binding.root)
         recogerDatos()
         setListeners()
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Este método se encarga de recoger los datos enviados por el intent de la activity [MenuPrincipalActivity] al pulsar
+     * en la opcion del menu lateral de perfil.
+     * En este caso lo que se recibe es el camarero que está usando la aplicación, el cual se alamcena en la variable [camarero];
+     * después se usan sus datos para rellenar los campos del perfil correctamente
+     */
     private fun recogerDatos() {
+        camarero= intent.extras?.getSerializable("CAMARERO") as Camarero?
+
         binding.tvEmailEdit.setText(camarero?.email )
         binding.tvNameEdit.setText(camarero?.nombre)
         binding.tvPasswordEdit.setText(camarero?.password)
@@ -61,18 +68,29 @@ class UserConfigActivity : AppCompatActivity() {
                 }
             }
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Método que coloca los listeners a los componentes necesarios para asignarles funcionalidad
+     */
     private fun setListeners() {
         binding.ivProfileImageEdit.setOnClickListener {
             changePicture()
         }
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Este método es llamado al pulsar en la imagen de perfil y se encarga de lanzar un intent el cuál permitirá
+     * al camarero seleccionar una imagen de su galeria para utilizarla como imagen de perfil
+     */
     private fun changePicture() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startActivityForResult(intent, 123)
     }
 
+    /**
+     * Esta sobreescritura del metodo [onActivityResult] se encarga de almacenar la imagen recibida de la galeria
+     * en Firebase
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -95,4 +113,5 @@ class UserConfigActivity : AppCompatActivity() {
                 }
         }
     }
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 }
