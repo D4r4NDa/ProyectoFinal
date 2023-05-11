@@ -4,6 +4,6 @@ data class Mesa(
     var numMesa: Int?= null,
     var camarero: Camarero?= null,
     var estado: Int?= null,
-    var cPedidas: ArrayList<ComidasPedidas>?= null,
-    var bPedidas: ArrayList<BebidasPedidas>?= null
+    var cPedidas: MutableList<ComidasPedidas>?= null,
+    var bPedidas: MutableList<BebidasPedidas>?= null
 ): java.io.Serializable

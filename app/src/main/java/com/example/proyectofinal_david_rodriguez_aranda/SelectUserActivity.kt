@@ -44,9 +44,9 @@ class SelectUserActivity : AppCompatActivity() {
     private fun cargarMesasTest() {
         var hamburguesa= Comida("Hamburguesa", 5.50)
         var agua= Bebida("Agua", 0.5)
-        var comidas= ArrayList<ComidasPedidas>()
+        var comidas= mutableListOf<ComidasPedidas>()
         comidas.add(ComidasPedidas(hamburguesa,1))
-        var bebidas= ArrayList<BebidasPedidas>()
+        var bebidas= mutableListOf<BebidasPedidas>()
         bebidas.add(BebidasPedidas(agua,1))
 
 
