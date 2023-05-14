@@ -16,6 +16,7 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.example.proyectofinal_david_rodriguez_aranda.adapters.MesasAdapter
 import com.example.proyectofinal_david_rodriguez_aranda.databinding.ActivityMenuPrincipalBinding
+import com.example.proyectofinal_david_rodriguez_aranda.databinding.HelpLayoutBinding
 import com.example.proyectofinal_david_rodriguez_aranda.models.Camarero
 import com.example.proyectofinal_david_rodriguez_aranda.models.Mesa
 import com.google.android.material.navigation.NavigationView
@@ -132,26 +133,24 @@ class MenuPrincipalActivity : AppCompatActivity() {
      * Al pulsar se abre un manual de uso de la aplicación en el navegador web predeterminado del teléfono
      */
     private fun gotoHelp() {
-        val dialogBuilder = AlertDialog.Builder(this)
-        val webView = WebView(this)
+        val dialogBuilder= AlertDialog.Builder(this)
+        val bindingDialog= HelpLayoutBinding.inflate(layoutInflater)
 
-// Configure the WebView
-        webView.settings.javaScriptEnabled = true
-        webView.settings.allowFileAccess = true// Enable JavaScript if needed
-        webView.loadUrl("file:///android_asset/help.html") // Load the HTML file from the assets folder
+        // Configure the WebView
+        bindingDialog.wvHelp.settings.javaScriptEnabled = true
+        bindingDialog.wvHelp.settings.allowFileAccess = true// Enable JavaScript if needed
+        bindingDialog.wvHelp.loadUrl("file:///android_asset/html/help.html") // Load the HTML file from the assets folder
 
-// Set the WebView as the view for the dialog
-        dialogBuilder.setView(webView)
+        // Set the WebView as the view for the dialog
+        dialogBuilder.setView(bindingDialog.root)
 
-// Add any additional dialog configuration
-        dialogBuilder.setTitle("HTML Content")
-        dialogBuilder.setPositiveButton("Close") { _, _ ->
+        // Add any additional dialog configuration
+        dialogBuilder.setPositiveButton("CERRAR") { _, _ ->
             // Handle close button action if needed
         }
 
-// Create and show the dialog
-        val dialog = dialogBuilder.create()
-        dialog.show()
+        // Create and show the dialog
+        dialogBuilder.show()
     }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     /**
