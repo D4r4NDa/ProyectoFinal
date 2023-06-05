@@ -38,32 +38,7 @@ class SelectUserActivity : AppCompatActivity() {
         setContentView(binding.root)
         setRecycler()
         traerCamareros()
-        cargarMesasTest()
     }
-
-    private fun cargarMesasTest() {
-        var hamburguesa= Comida("Hamburguesa", 5.50)
-        var agua= Bebida("Agua", 0.5)
-        var comidas= mutableListOf<ComidasPedidas>()
-        comidas.add(ComidasPedidas(hamburguesa,1))
-        var bebidas= mutableListOf<BebidasPedidas>()
-        bebidas.add(BebidasPedidas(agua,1))
-
-
-        var mesa1= Mesa(1,null,0,comidas,bebidas)
-        var mesa2= Mesa(2,null,0,comidas,bebidas)
-        var mesa3= Mesa(3,null,0,comidas,bebidas)
-        var mesa4= Mesa(4,null,0,comidas,bebidas)
-        var mesa5= Mesa(5,null,0,comidas,bebidas)
-
-        db.getReference("mesas").child(mesa1.numMesa.toString()).setValue(mesa1)
-        db.getReference("mesas").child(mesa2.numMesa.toString()).setValue(mesa2)
-        db.getReference("mesas").child(mesa3.numMesa.toString()).setValue(mesa3)
-        db.getReference("mesas").child(mesa4.numMesa.toString()).setValue(mesa4)
-        db.getReference("mesas").child(mesa5.numMesa.toString()).setValue(mesa5)
-
-    }
-
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     /**
      * Este método se encarga de leer la base de datos y cargar en el Recycler la lista de camareros que están registrados

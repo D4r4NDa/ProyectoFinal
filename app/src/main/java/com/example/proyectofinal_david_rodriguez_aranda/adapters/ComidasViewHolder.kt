@@ -10,9 +10,13 @@ class ComidasViewHolder(v: View): RecyclerView.ViewHolder(v) {
 
     val binding= PedidoLayoutBinding.bind(v)
 
-    fun render(cPedida: ComidasPedidas) {
+    fun render(cPedida: ComidasPedidas, onQuitarComida: (Comida) -> Unit) {
         binding.tvNombrePedido.setText(cPedida.comida?.nombre)
         binding.tvCantidadPedido.setText(cPedida.cantidad.toString())
+
+        binding.ivDeletePedido.setOnClickListener {
+            onQuitarComida(cPedida.comida!!)
+        }
     }
 
 }

@@ -249,20 +249,24 @@ class MenuPrincipalActivity : AppCompatActivity() {
      */
     private fun onItemClick(m: Mesa) {
 
-        if(m.camarero?.equals(camarero) == true) {
-            val i= Intent(this, PedidosMesaActivity::class.java).apply {
-                putExtra("MESA", m)
-                putExtra("CAMARERO", camarero)
-            }
+        try {
+            if(m.camarero?.equals(camarero) == true) {
+                val i= Intent(this, PedidosMesaActivity::class.java).apply {
+                    putExtra("MESA", m)
+                    putExtra("CAMARERO", camarero)
+                }
 
-            startActivity(i)
-        }else {
-            val i= Intent(this, EstadoMesaActivity::class.java).apply {
-                putExtra("MESA", m)
-                putExtra("CAMARERO", camarero)
-            }
+                startActivity(i)
+            }else {
+                val i= Intent(this, EstadoMesaActivity::class.java).apply {
+                    putExtra("MESA", m)
+                    putExtra("CAMARERO", camarero)
+                }
 
-            startActivity(i)
+                startActivity(i)
+            }
+        }catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

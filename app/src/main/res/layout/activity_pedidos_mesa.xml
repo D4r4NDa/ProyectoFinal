@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:backgroundTint="#FFFFFF"
+    android:background="@drawable/login_background"
     tools:context=".PedidosMesaActivity">
 
     <ImageView
@@ -16,13 +15,15 @@
         android:layout_marginEnd="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_add" />
+        app:srcCompat="@drawable/baseline_add_circle_outline_24" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvComidaPedida"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="24dp"
+        android:layout_marginBottom="46dp"
+        app:layout_constraintBottom_toTopOf="@+id/iv_add_bebida"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_add_comida" />
@@ -35,7 +36,7 @@
         android:layout_marginTop="24dp"
         android:fontFamily="@font/caveat"
         android:text="COMIDA"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +50,7 @@
         android:layout_marginEnd="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_add" />
+        app:srcCompat="@drawable/baseline_add_circle_outline_24" />
 
     <TextView
         android:id="@+id/textView6"
@@ -59,7 +60,7 @@
         android:layout_marginTop="320dp"
         android:fontFamily="@font/caveat"
         android:text="BEBIDA"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,22 +69,23 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvBebidaPedida"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="24dp"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/bt_confirmar_pedido"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_add_bebida" />
 
-    <Button
-        android:id="@+id/bt_confrimar_pedido"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/bt_confirmar_pedido"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="104dp"
-        android:fontFamily="@font/caveat"
-        android:text="CONFIRMAR"
-        android:textStyle="bold"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp"
+        android:clickable="true"
+        app:backgroundTint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rvBebidaPedida" />
+        app:srcCompat="@drawable/baseline_task_alt_24" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple HTML Page</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat&display=swap" rel="stylesheet">
+
+    <script>
+        // JavaScript code to handle anchor tag clicks and scrolling
+        window.onload = function() {
+          var links = document.querySelectorAll('a[href^="#"]');
+          for (var i = 0; i < links.length; i++) {
+            links[i].onclick = function(e) {
+              e.preventDefault();
+              var target = document.querySelector(this.getAttribute('href'));
+              target.scrollIntoView({ behavior: 'smooth' });
+            };
+          }
+        };
+      </script>
+</head>
+<body>
+    <div class="banner">
+        RESTAURANTE LA HUERTA
+    </div>
+    
+    <div class="indice">
+        <p id="titulo_indice"><u>ÍNDICE</u></p>
+        <ol>
+            <li>
+                Estado de las mesas
+                <ol>
+                    <li><a href="#mesa_libre">Mesa libre</a></li>
+                    <li><a href="#mesa_preparacion">Mesa en preparación</a></li>
+                    <li><a href="#mesa_ocupada">Mesa ocupada</a></li>
+                </ol>
+            </li>
+        </ol>
+    </div>
+
+    <div class="estado_mesas">
+        <p id="mesa_libre"><h3><u>MESA LIBRE</u></h3></p>
+        <p>
+            Cuando una mesa se encuentra libre, al pulsar sobre ella podrás pulsar el botón "ASIGNAR" para comenzar a atenderla.
+            Una vez pulsado el botón serás enviado de nuevo al selector de mesas y verás que la mesa ahora aparece con el estado de "Ocupada".
+        </p><br>
+
+        <p id="mesa_preparacion"><h3><u>MESA EN PREPARACIÓN</u></h3></p>
+        <p>
+            Cuando una mesa se encuentra en estado de preparación quiere decir que la mesa no está lista para atenderse aún.
+            La mesa pasará a estar libre tras un breve tiempo cuando esté lista.
+            Si se selecciona la mesa durante este periodo, se notificará su estado.
+        </p><br>
+
+        <p id="mesa_ocupada"><h3><u>MESA OCUPADA</u></h3></p>
+        <p>
+            Cuando una mesa se encuentra ocupada quiere decir que está siendo actualmente atendida.
+            Si tu eres la persona que la está atendiendo al pulsar sobre ella se mostrará la pantalla de toma de comandas, 
+            en caso contrario se mostrará la persona que la está atendiendo.
+        </p><br>
+    </div>
+</body>
+</html>
