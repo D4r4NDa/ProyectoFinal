@@ -25,6 +25,7 @@ class UserConfigActivity : AppCompatActivity() {
         binding= ActivityUserConfigBinding.inflate(layoutInflater)
         storage= FirebaseStorage.getInstance("gs://proyectofinal-29247.appspot.com/")
         setContentView(binding.root)
+        supportActionBar?.hide()
         recogerDatos()
         setListeners()
     }

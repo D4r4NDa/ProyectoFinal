@@ -12,7 +12,6 @@ class BebidasViewHolder(v: View): RecyclerView.ViewHolder(v) {
 
     fun render(bPedidas: BebidasPedidas, onQuitarBebida: (Bebida) -> Unit) {
         binding.tvNombrePedido.setText(bPedidas.bebida?.nombre)
-        Toast.makeText(binding.tvCantidadPedido.context, bPedidas.bebida?.nombre , Toast.LENGTH_SHORT).show()
         binding.tvCantidadPedido.setText(bPedidas.cantidad.toString())
 
         binding.ivDeletePedido.setOnClickListener {

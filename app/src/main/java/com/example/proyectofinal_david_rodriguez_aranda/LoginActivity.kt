@@ -1,21 +1,19 @@
 package com.example.proyectofinal_david_rodriguez_aranda
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Patterns
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.isVisible
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.example.proyectofinal_david_rodriguez_aranda.databinding.ActivityLoginBinding
-import com.example.proyectofinal_david_rodriguez_aranda.models.Bebida
 import com.example.proyectofinal_david_rodriguez_aranda.models.Camarero
-import com.example.proyectofinal_david_rodriguez_aranda.models.Comida
-import com.example.proyectofinal_david_rodriguez_aranda.models.Mesa
 import com.example.proyectofinal_david_rodriguez_aranda.prefs.Prefs
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -43,6 +41,7 @@ class LoginActivity : AppCompatActivity() {
         db= FirebaseDatabase.getInstance("https://proyectofinal-29247-default-rtdb.europe-west1.firebasedatabase.app/")
         storage= FirebaseStorage.getInstance("gs://proyectofinal-29247.appspot.com/")
         prefs= Prefs(this)
+        supportActionBar?.hide()
         setListeners()
         recogerDatos()
     }
@@ -82,6 +81,7 @@ class LoginActivity : AppCompatActivity() {
      * En caso de que las credenciales no sean correctas se muestra un dialogo indicándolo y no se continua con el inicio de sesión
      */
     private fun login() {
+        val typeface= Typeface.createFromAsset(assets, "fonts/caveat.ttf")
         password= binding.etPasswordLogin.text.toString().trim()
         if(password.length <=0) {
             binding.etPasswordLogin.setError("Porfavor rellena este campo.")
@@ -99,16 +99,40 @@ class LoginActivity : AppCompatActivity() {
 
                 camarero?.online=true
 
-                db.getReference("camareros").child(camarero?.password.toString()).setValue(camarero)
+                db.getReference("camareros").child(camarero?.email.toString().replace(".","-")).setValue(camarero)
 
                 ProcessLifecycleOwner.get().lifecycle.addObserver(Observer(this, camarero?.email.toString()))
             }else {
                 val builder= AlertDialog.Builder(this)
                     .setTitle("ERROR")
                     .setMessage("Las credenciales no son correctas, prueba de nuevo.\nSi el error persiste contacta al administrador.")
-                    .setPositiveButton("Aceptar",null)
-                    .create()
-                    .show()
+                    .setPositiveButton("Aceptar") {_, _ ->
+                        binding.etPasswordLogin.setText(null)
+                    }
+
+                val dialog= builder.create()
+                dialog.window?.setBackgroundDrawableResource(R.drawable.dialog_round_corners)
+                dialog.setOnShowListener {
+                    val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    val message = dialog.findViewById<TextView>(android.R.id.message)
+                    val title = dialog.findViewById<TextView>(androidx.appcompat.R.id.alertTitle)
+
+                    positiveButton?.let {
+                        it.setTypeface(typeface)
+                        it.setTextColor(Color.BLACK)
+                    }
+                    message?.let {
+                        it.setTypeface(typeface)
+                        it.setTextColor(Color.BLACK)
+                        it.setTextSize(25F)
+                    }
+                    title?.let {
+                        it.setTypeface(typeface)
+                        it.setTextSize(45F)
+                        it.setTextColor(Color.BLACK)
+                    }
+                }
+                dialog.show()
             }
         }
     }
@@ -161,7 +185,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         camarero?.online = false
-        db.getReference("camareros").child(camarero?.password.toString()).setValue(camarero)
+        db.getReference("camareros").child(camarero?.email.toString().replace(".","-")).setValue(camarero)
     }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 }

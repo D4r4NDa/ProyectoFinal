@@ -1,6 +1,7 @@
 buildscript {
     dependencies {
         classpath 'com.google.gms:google-services:4.3.10'
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:1.8.10"
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
@@ -9,3 +10,18 @@ plugins {
     id 'org.jetbrains.kotlin.android' version '1.8.0' apply false
     id("org.jetbrains.dokka") version "1.8.10"
 }
+
+subprojects {
+    tasks.whenTaskAdded { task ->
+        if (task.name == "mapDebugSourceSetPaths") {
+            task.dependsOn("processDebugGoogleServices")
+        }
+    }
+
+    tasks.withType(dokkaHtml.getClass()).configureEach {
+        pluginsMapConfiguration.set(
+                ["org.jetbrains.dokka.base.DokkaBase": """{ "separateInheritedMembers": true}"""]
+        )
+    }
+}
+

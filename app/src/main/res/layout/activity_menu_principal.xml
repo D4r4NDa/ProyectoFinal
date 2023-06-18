@@ -6,9 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/drawer_layout"
-    android:background="@color/white"
-    android:backgroundTint="@color/white">
+    android:id="@+id/drawer_layout">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,10 +15,22 @@
         android:background="@drawable/login_background"
         tools:context=".MenuPrincipalActivity">
 
+        <ImageView
+            android:id="@+id/arrow_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="16dp"
+            android:src="@drawable/baseline_menu_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/textView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/caveat"
             android:text="MESAS"
             android:textAlignment="center"
@@ -33,9 +43,8 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_mesas"
-            android:layout_width="409dp"
-            android:layout_height="665dp"
-            android:layout_marginTop="32dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,8 +56,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/white"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="#000000"
         app:menu="@menu/lateral_menu">
 
     </com.google.android.material.navigation.NavigationView>

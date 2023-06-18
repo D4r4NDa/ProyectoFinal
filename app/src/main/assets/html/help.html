@@ -1,25 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple HTML Page</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat&display=swap" rel="stylesheet">
 
-    <script>
-        // JavaScript code to handle anchor tag clicks and scrolling
-        window.onload = function() {
-          var links = document.querySelectorAll('a[href^="#"]');
-          for (var i = 0; i < links.length; i++) {
-            links[i].onclick = function(e) {
-              e.preventDefault();
-              var target = document.querySelector(this.getAttribute('href'));
-              target.scrollIntoView({ behavior: 'smooth' });
-            };
-          }
-        };
-      </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            text-decoration: underline;
+        }
+
+        p {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="banner">
@@ -32,10 +39,14 @@
             <li>
                 Estado de las mesas
                 <ol>
-                    <li><a href="#mesa_libre">Mesa libre</a></li>
-                    <li><a href="#mesa_preparacion">Mesa en preparación</a></li>
-                    <li><a href="#mesa_ocupada">Mesa ocupada</a></li>
+                    <li>Mesa libre</li>
+                    <li>Mesa asignada</li>
+                    <li>Mesa ocupada</li>
                 </ol>
+            </li>
+
+            <li>
+                Toma de comandas
             </li>
         </ol>
     </div>
@@ -47,19 +58,48 @@
             Una vez pulsado el botón serás enviado de nuevo al selector de mesas y verás que la mesa ahora aparece con el estado de "Ocupada".
         </p><br>
 
-        <p id="mesa_preparacion"><h3><u>MESA EN PREPARACIÓN</u></h3></p>
+        <p id="mesa_asignada"><h3><u>MESA EN PREPARACIÓN</u></h3></p>
         <p>
-            Cuando una mesa se encuentra en estado de preparación quiere decir que la mesa no está lista para atenderse aún.
-            La mesa pasará a estar libre tras un breve tiempo cuando esté lista.
-            Si se selecciona la mesa durante este periodo, se notificará su estado.
+            Cuando una mesa se encuentra asignada significa que tú la estás atendiendo.
+            Si se selecciona la mesa mientras la tengas asignada se mostrará la pantalla de toma de comandas.
         </p><br>
 
         <p id="mesa_ocupada"><h3><u>MESA OCUPADA</u></h3></p>
         <p>
-            Cuando una mesa se encuentra ocupada quiere decir que está siendo actualmente atendida.
-            Si tu eres la persona que la está atendiendo al pulsar sobre ella se mostrará la pantalla de toma de comandas, 
-            en caso contrario se mostrará la persona que la está atendiendo.
+            Cuando una mesa se encuentra ocupada quiere decir que está siendo actualmente atendida por otro camarero. 
+            Al seleccionarla se mostrará la persona que la está atendiendo.
         </p><br>
+    </div>
+
+    <div class="toma_comandas">
+        <p><h3>TOMA DE COMANDAS</h3></p>
+        <p>
+            <p>
+                Una vez se pulsa sobre una mesa que tengamos asignada se accede a la pantalla de toma de comandas.
+                Aquí para añadir una nueva comida o bebida solo hay que pulsar en el signo "+" que se encuentra al lado
+                de la etiqueta que diferencia cada sección.
+            </p>
+            <p>
+                Una vez pulsado aparecerá un cuadro emergente donde se podrá indicar la comida o bebida que se desea
+                así como la cantidad; al hacer esto en la pantalla aparecerá el producto seleccionado en su sección correspondiente
+                según sea comida o bebida indicando su nombre y cantidad seleccionada, si ha sido un error se puede pulsar en la "x"
+                al lado del producto para eliminarlo.
+            </p>
+            <p>
+                Una vez finalizado el pedido se debe pulsar en el botón de confirmación en la esquina inferior derecha y se enviará
+                el pedido.
+            </p>
+        </p>
+    </div>
+
+    <div class="modificar_perfil">
+        <p><h3>MODIFICAR PERFIL</h3></p>
+        <p>
+            <p>
+                Para ver el perfil solo hay que pulsar en la opción correspondiente en el menú lateral.
+                Una vez dentro se podrá modificar la imagen de perfil al pulsar sobre ella.
+            </p>
+        </p>
     </div>
 </body>
 </html>

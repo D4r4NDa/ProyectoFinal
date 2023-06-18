@@ -10,6 +10,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
+/**
+ * Esta clase se encarga de manejar el estado (conectado/desconectado) de los camareros al salir y entrar de la aplicación
+ */
 class Observer(c: Context, email: String) : LifecycleObserver  {
 
     var db: FirebaseDatabase= FirebaseDatabase.getInstance("https://proyectofinal-29247-default-rtdb.europe-west1.firebasedatabase.app/")
@@ -35,7 +38,7 @@ class Observer(c: Context, email: String) : LifecycleObserver  {
                     var c= i.getValue(Camarero::class.java)
                     if(c?.email.equals(correo)) {
                         c?.online= false
-                        db.getReference("camareros").child(c?.password.toString()).setValue(c)
+                        db.getReference("camareros").child(c?.email.toString().replace(".","-")).setValue(c)
 
                     }
 

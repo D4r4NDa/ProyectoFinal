@@ -1,11 +1,12 @@
 package com.example.proyectofinal_david_rodriguez_aranda
 
 import android.content.Intent
-import android.net.Uri
+import android.graphics.Color
+import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
-import android.webkit.WebView
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
@@ -45,6 +46,7 @@ class MenuPrincipalActivity : AppCompatActivity() {
     lateinit var toggle: ActionBarDrawerToggle
     lateinit var camarero: Camarero
     lateinit var navView: NavigationView
+    lateinit var drawerLayout: DrawerLayout
 
 //****************************************************METODOS******************************************************************************************************************************************
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,16 +55,49 @@ class MenuPrincipalActivity : AppCompatActivity() {
         setContentView(binding.root)
         db= FirebaseDatabase.getInstance("https://proyectofinal-29247-default-rtdb.europe-west1.firebasedatabase.app/")
         camarero= intent.extras?.getSerializable("CAMARERO") as Camarero
-        val drawerLayout: DrawerLayout= findViewById(R.id.drawer_layout)
         navView= findViewById(R.id.nav_view)
+        drawerLayout= findViewById(R.id.drawer_layout)
         toggle= ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.hide()
+        setLateralMenu()
         setRecycler()
         traerMesas()
         setListeners()
         setProfile()
+    }
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Este método se encarga de preparar y cargar el menú de navegación lateral.
+     */
+    private fun setLateralMenu() {
+        drawerLayout = findViewById(R.id.drawer_layout)
+        var arrowView = binding.arrowView
+
+        // Set up the ActionBarDrawerToggle
+        toggle = object : ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            R.string.open,
+            R.string.close
+        ) {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                super.onDrawerSlide(drawerView, slideOffset)
+            }
+        }
+
+        // Set the ActionBarDrawerToggle as the drawer listener
+        drawerLayout.addDrawerListener(toggle)
+
+        // Handle the click event of the arrow icon
+        arrowView.setOnClickListener {
+            if (drawerLayout.isDrawerOpen(navView)) {
+                drawerLayout.closeDrawer(navView)
+            } else {
+                drawerLayout.openDrawer(navView)
+            }
+        }
     }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     /**
@@ -79,7 +114,7 @@ class MenuPrincipalActivity : AppCompatActivity() {
         val ref= storage.reference
         val imagen= ref.child("${camarero.email}/profile.png")
         imagen.metadata.addOnSuccessListener {
-            //Existe la imagen y se la ponemos
+            //Existe la imagen y se le aplica
             imagen.downloadUrl.addOnSuccessListener {
                 val requestOptions= RequestOptions().transform(CircleCrop())
                 Glide.with(this)
@@ -111,15 +146,15 @@ class MenuPrincipalActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.nav_profile -> {
                     viewProfile()
-                    true
+                    false
                 }
                 R.id.nav_settings -> {
                     gotoHelp()
-                    true
+                    false
                 }
                 R.id.nav_logout -> {
                     logout()
-                    true
+                    false
                 }
                 else -> true
             }
@@ -136,21 +171,32 @@ class MenuPrincipalActivity : AppCompatActivity() {
         val dialogBuilder= AlertDialog.Builder(this)
         val bindingDialog= HelpLayoutBinding.inflate(layoutInflater)
 
-        // Configure the WebView
         bindingDialog.wvHelp.settings.javaScriptEnabled = true
-        bindingDialog.wvHelp.settings.allowFileAccess = true// Enable JavaScript if needed
+        bindingDialog.wvHelp.settings.allowFileAccess = true
         bindingDialog.wvHelp.loadUrl("file:///android_asset/html/help.html") // Load the HTML file from the assets folder
 
-        // Set the WebView as the view for the dialog
-        dialogBuilder.setView(bindingDialog.root)
+        try {
+            val typeface= Typeface.createFromAsset(assets, "fonts/caveat.ttf")
+            val dialog = dialogBuilder
+                .setView(bindingDialog.root)
+                .setPositiveButton("CERRAR", null)
+                .create()
 
-        // Add any additional dialog configuration
-        dialogBuilder.setPositiveButton("CERRAR") { _, _ ->
-            // Handle close button action if needed
-        }
+            dialog.window?.setBackgroundDrawableResource(R.drawable.dialog_round_corners)
 
-        // Create and show the dialog
-        dialogBuilder.show()
+            dialog.setOnShowListener {
+                val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+
+                positiveButton?.let {
+                    it.setTypeface(typeface)
+                    it.setTextColor(Color.BLACK)
+                }
+            }
+            dialog.show()
+
+       }catch (e: Exception) {
+           e.printStackTrace()
+       }
     }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     /**
@@ -170,27 +216,61 @@ class MenuPrincipalActivity : AppCompatActivity() {
      * activity [MainActivity] y se cierra esta, además se cambia el estado del camarero a desconectado
      */
     private fun logout() {
-        val builder= AlertDialog.Builder(this)
-            .setTitle("CERRAR SESIÓN")
-            .setMessage("¿Quieres cerrar sesión?")
-            .setPositiveButton("Si") { _, _ ->
-                startActivity(Intent(this, MainActivity::class.java))
-                camarero.online= false
-                db.getReference("camareros").child(camarero.password.toString()).setValue(camarero)
-                finish()
+        val dialogBuilder= AlertDialog.Builder(this)
+
+        try {
+            val dialog = dialogBuilder
+                .setTitle("Cerrar Sesión")
+                .setMessage("¿Quieres cerrar sesión?")
+                .setPositiveButton("SI") {_, _ ->
+                    startActivity(Intent(this, MainActivity::class.java))
+                    camarero.online= false
+                    db.getReference("camareros").child(camarero?.email.toString().replace(".","-")).setValue(camarero)
+                    finish()
+                }
+                .setNegativeButton("NO", null)
+                .create()
+
+            dialog.window?.setBackgroundDrawableResource(R.drawable.dialog_round_corners)
+
+            dialog.setOnShowListener {
+                val typeface= Typeface.createFromAsset(assets, "fonts/caveat.ttf")
+                val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                val negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                val message = dialog.findViewById<TextView>(android.R.id.message)
+                val title = dialog.findViewById<TextView>(androidx.appcompat.R.id.alertTitle)
+
+                positiveButton?.let {
+                    it.setTypeface(typeface)
+                    it.setTextColor(Color.BLACK)
+                }
+                negativeButton?.let {
+                    it.setTypeface(typeface)
+                    it.setTextColor(Color.BLACK)
+                }
+                message?.let {
+                    it.setTypeface(typeface)
+                    it.setTextColor(Color.BLACK)
+                    it.setTextSize(25F)
+                }
+                title?.let {
+                    it.setTypeface(typeface)
+                    it.setTextSize(45F)
+                    it.setTextColor(Color.BLACK)
+                }
             }
-            .setNegativeButton("No", null)
-            .create()
-            .show()
+            dialog.show()
+
+        }catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         if(toggle.onOptionsItemSelected(item)) {
             return true
         }
-
         return super.onOptionsItemSelected(item)
     }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -229,7 +309,7 @@ class MenuPrincipalActivity : AppCompatActivity() {
      */
     private fun setRecycler() {
         lista= arrayListOf<Mesa>()
-        adapter= MesasAdapter(lista) { onItemClick(it) }
+        adapter= MesasAdapter(lista, camarero) { onItemClick(it) }
         val layoutManager= LinearLayoutManager(this)
 
         binding.rvMesas.adapter= adapter

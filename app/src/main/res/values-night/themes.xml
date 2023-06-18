@@ -13,4 +13,8 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="RoundCornerDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@drawable/dialog_round_corners</item>
+    </style>
 </resources>

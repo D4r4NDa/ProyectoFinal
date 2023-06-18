@@ -1,8 +1,11 @@
 package com.example.proyectofinal_david_rodriguez_aranda
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.proyectofinal_david_rodriguez_aranda.adapters.UsuariosAdapter
@@ -36,6 +39,7 @@ class SelectUserActivity : AppCompatActivity() {
         binding= ActivitySelectUserBinding.inflate(layoutInflater)
         db= FirebaseDatabase.getInstance("https://proyectofinal-29247-default-rtdb.europe-west1.firebasedatabase.app/")
         setContentView(binding.root)
+        supportActionBar?.hide()
         setRecycler()
         traerCamareros()
     }
@@ -87,14 +91,37 @@ class SelectUserActivity : AppCompatActivity() {
      * @param c
      */
     private fun onItemClick(c: Camarero) {
+        val typeface= Typeface.createFromAsset(assets, "fonts/caveat.ttf")
 
         if(c.online==true) {
             val builder= AlertDialog.Builder(this)
                 .setTitle("ERROR")
                 .setMessage("Este usuario ya está en uso.\nSi es su usuario y no lo esta usando usted, contacte al administrador.")
                 .setPositiveButton("Aceptar",null)
-                .create()
-                .show()
+
+            val dialog= builder.create()
+            dialog.window?.setBackgroundDrawableResource(R.drawable.dialog_round_corners)
+            dialog.setOnShowListener {
+                val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                val message = dialog.findViewById<TextView>(android.R.id.message)
+                val title = dialog.findViewById<TextView>(androidx.appcompat.R.id.alertTitle)
+
+                positiveButton?.let {
+                    it.setTypeface(typeface)
+                    it.setTextColor(Color.BLACK)
+                }
+                message?.let {
+                    it.setTypeface(typeface)
+                    it.setTextColor(Color.BLACK)
+                    it.setTextSize(25F)
+                }
+                title?.let {
+                    it.setTypeface(typeface)
+                    it.setTextSize(45F)
+                    it.setTextColor(Color.BLACK)
+                }
+            }
+            dialog.show()
 
             return
         }

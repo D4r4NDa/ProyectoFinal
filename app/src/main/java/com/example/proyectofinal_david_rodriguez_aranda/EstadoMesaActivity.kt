@@ -27,6 +27,7 @@ class EstadoMesaActivity : AppCompatActivity() {
         binding= ActivityEstadoMesaBinding.inflate(layoutInflater)
         db= FirebaseDatabase.getInstance("https://proyectofinal-29247-default-rtdb.europe-west1.firebasedatabase.app/")
         setContentView(binding.root)
+        supportActionBar?.hide()
         recogerDatos()
     }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -60,7 +61,7 @@ class EstadoMesaActivity : AppCompatActivity() {
      */
     private fun asignarMesa() {
         mesa?.camarero = camarero
-        mesa?.estado= 2
+        mesa?.estado= 1
         db.getReference("mesas").child(mesa?.numMesa.toString()).setValue(mesa).addOnSuccessListener {
             finish()
 
@@ -84,12 +85,7 @@ class EstadoMesaActivity : AppCompatActivity() {
 
         }else if(mesa?.estado==1) {
             binding.btAtenderMesa.isVisible= false
-            binding.tvMensajeEstadoMesa.text= "LA MESA ESTA SIENDO\nLIMPIADA"
-
-        }else if(mesa?.estado==2) {
-            binding.btAtenderMesa.isVisible= false
             binding.tvMensajeEstadoMesa.text= "LA MESA ESTA SIENDO ATENDIDA POR\n${mesa?.camarero?.nombre}"
-
         }
     }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

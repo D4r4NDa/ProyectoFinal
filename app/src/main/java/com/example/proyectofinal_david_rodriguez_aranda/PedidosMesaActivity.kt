@@ -1,10 +1,11 @@
 package com.example.proyectofinal_david_rodriguez_aranda
 
 import android.R
-import android.app.Dialog
+import android.graphics.Color
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.proyectofinal_david_rodriguez_aranda.adapters.BebidasAdapter
@@ -17,8 +18,12 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
+/**
+ * Esta activity gestiona la toma de comandas de las mesas. Desde aquí se toman y se envían al programa "central"
+ * en el que se gestionan.
+ */
 class PedidosMesaActivity : AppCompatActivity() {
-
+//***************************************************VARIABLES******************************************************************************************************************************************
     lateinit var binding: ActivityPedidosMesaBinding
     lateinit var db: FirebaseDatabase
     lateinit var listaBebidasPedidas: MutableList<BebidasPedidas>
@@ -28,7 +33,7 @@ class PedidosMesaActivity : AppCompatActivity() {
     lateinit var adapterComidas: ComidasAdapter
     lateinit var adapterBebidas: BebidasAdapter
     lateinit var mesa: Mesa
-
+//****************************************************METODOS******************************************************************************************************************************************
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityPedidosMesaBinding.inflate(layoutInflater)
@@ -36,12 +41,17 @@ class PedidosMesaActivity : AppCompatActivity() {
         listaBebidas= mutableListOf<Bebida>()
         listaComidas= mutableListOf<Comida>()
         setContentView(binding.root)
+        supportActionBar?.hide()
         recogerDatos()
         setRecyclers()
         traerProductos()
         setListerners()
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Este método se encarga de leer la base de datos para cargar los productos disponibles, tanto comida como bebida,
+     * para poder ser pedidos.
+     */
     private fun traerProductos() {
         db.getReference("bebidas").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -77,12 +87,20 @@ class PedidosMesaActivity : AppCompatActivity() {
             }
         })
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Este método simplemente se encarga de recoger la mesa seleccionada enviada en un intent desde
+     * la activity [MenuPrincipalActivity]
+     */
     private fun recogerDatos() {
-        var extras= intent.extras
+        val extras= intent.extras
         mesa= extras?.getSerializable("MESA") as Mesa
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Este método se encarga de preparar los RecyclerView asignandoles el adapter y el tipo de layout con el que se estructurarán
+     * los elementos
+     */
     private fun setRecyclers() {
         try {
             listaBebidasPedidas= mutableListOf<BebidasPedidas>()
@@ -98,7 +116,10 @@ class PedidosMesaActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Método que coloca los listeners a los componentes necesarios para asignarles funcionalidad
+     */
     private fun setListerners() {
         binding.ivAddBebida.setOnClickListener {
             addBebida()
@@ -112,14 +133,19 @@ class PedidosMesaActivity : AppCompatActivity() {
             confirmarPedido()
         }
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Este método muestra un dialogo emergente que permite seleccionar una comida y la cantidad de ella que se desea,
+     * cuando se completa la selección se añade a una lista local donde queda a la espera de ser enviado junto con el resto
+     * del pedido a la base de datos.
+     */
     private fun addComida() {
         try {
             val dialogBuilder = AlertDialog.Builder(this)
             val bindingDialog = SelectorPedidoLayoutBinding.inflate(layoutInflater)
             dialogBuilder.setView(bindingDialog.root)
 
-            var unidades= 0
+            var unidades= 1
 
             bindingDialog.tvCantidadSeleccionada.setText(unidades.toString())
 
@@ -129,8 +155,10 @@ class PedidosMesaActivity : AppCompatActivity() {
             }
 
             bindingDialog.ivMenos.setOnClickListener {
-                unidades--
-                bindingDialog.tvCantidadSeleccionada.setText(unidades.toString())
+                if(unidades>1) {
+                    unidades--
+                    bindingDialog.tvCantidadSeleccionada.setText(unidades.toString())
+                }
             }
 
             var listaNombres= mutableListOf<String>()
@@ -141,6 +169,7 @@ class PedidosMesaActivity : AppCompatActivity() {
             val arrayAdapter = CustomSpinnerAdapter(this, R.layout.simple_spinner_item, listaNombres)
             arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             bindingDialog.spProducto.adapter= arrayAdapter
+
 
             dialogBuilder.setPositiveButton("Aceptar") { _, _ ->
                 var encontrado= false
@@ -170,20 +199,36 @@ class PedidosMesaActivity : AppCompatActivity() {
                 }
             }
 
-            dialogBuilder.show()
+            val dialog= dialogBuilder.create()
+            dialog.window?.setBackgroundDrawableResource(com.example.proyectofinal_david_rodriguez_aranda.R.drawable.dialog_round_corners)
+            dialog.setOnShowListener {
+                val typeface= Typeface.createFromAsset(assets, "fonts/caveat.ttf")
+                val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+
+                positiveButton?.let {
+                    it.setTypeface(typeface)
+                    it.setTextColor(Color.BLACK)
+                }
+            }
+            dialog.show()
         }catch (e: Exception) {
             e.printStackTrace()
         }
 
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Este método muestra un dialogo emergente que permite seleccionar una bebida y la cantidad de ella que se desea,
+     * cuando se completa la selección se añade a una lista local donde queda a la espera de ser enviado junto con el resto
+     * del pedido a la base de datos.
+     */
     private fun addBebida() {
         try {
             val dialogBuilder = AlertDialog.Builder(this)
             val bindingDialog = SelectorPedidoLayoutBinding.inflate(layoutInflater)
             dialogBuilder.setView(bindingDialog.root)
 
-            var unidades= 0
+            var unidades= 1
 
             bindingDialog.tvCantidadSeleccionada.setText(unidades.toString())
 
@@ -193,8 +238,10 @@ class PedidosMesaActivity : AppCompatActivity() {
             }
 
             bindingDialog.ivMenos.setOnClickListener {
-                unidades--
-                bindingDialog.tvCantidadSeleccionada.setText(unidades.toString())
+                if(unidades>1) {
+                    unidades--
+                    bindingDialog.tvCantidadSeleccionada.setText(unidades.toString())
+                }
             }
 
             var listaNombres= mutableListOf<String>()
@@ -203,7 +250,6 @@ class PedidosMesaActivity : AppCompatActivity() {
             }
 
             val arrayAdapter = CustomSpinnerAdapter(this, R.layout.simple_spinner_item, listaNombres)
-            val font = Typeface.createFromAsset(assets, "fonts/caveat.ttf")
             arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             bindingDialog.spProducto.adapter= arrayAdapter
 
@@ -235,12 +281,26 @@ class PedidosMesaActivity : AppCompatActivity() {
                 }
             }
 
-            dialogBuilder.show()
+            val dialog= dialogBuilder.create()
+            dialog.window?.setBackgroundDrawableResource(com.example.proyectofinal_david_rodriguez_aranda.R.drawable.dialog_round_corners)
+            dialog.setOnShowListener {
+                val typeface= Typeface.createFromAsset(assets, "fonts/caveat.ttf")
+                val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+
+                positiveButton?.let {
+                    it.setTypeface(typeface)
+                    it.setTextColor(Color.BLACK)
+                }
+            }
+            dialog.show()
         }catch (e: Exception) {
             e.printStackTrace()
         }
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Este método permite eliminar una bebida de la lista local en caso de que se añada por error.
+     */
     private fun onQuitarBebida(b: Bebida) {
         for(bp in listaBebidasPedidas) {
             if(bp.bebida?.nombre.equals(b.nombre)) {
@@ -249,7 +309,10 @@ class PedidosMesaActivity : AppCompatActivity() {
             }
         }
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Este método permite eliminar una comida de la lista local en caso de que se añada por error.
+     */
     private fun onQuitarComida(c: Comida) {
         for(cp in listaComidasPedidas) {
             if(cp.comida?.nombre.equals(c.nombre)) {
@@ -258,7 +321,10 @@ class PedidosMesaActivity : AppCompatActivity() {
             }
         }
     }
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Este método toma la lista local con todos los pedidos y los envía a la base de datos.
+     */
     private fun confirmarPedido() {
         var encontrado= false
 
@@ -324,9 +390,41 @@ class PedidosMesaActivity : AppCompatActivity() {
                     }
                 }
                 .setNegativeButton("Cancelar", null)
-                .show()
+
+            val dialog= builder.create()
+            dialog.window?.setBackgroundDrawableResource(com.example.proyectofinal_david_rodriguez_aranda.R.drawable.dialog_round_corners)
+
+
+            dialog.setOnShowListener {
+                val typeface= Typeface.createFromAsset(assets, "fonts/caveat.ttf")
+                val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                val negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                val message = dialog.findViewById<TextView>(android.R.id.message)
+                val title = dialog.findViewById<TextView>(androidx.appcompat.R.id.alertTitle)
+
+                positiveButton?.let {
+                    it.setTypeface(typeface)
+                    it.setTextColor(Color.BLACK)
+                }
+                negativeButton?.let {
+                    it.setTypeface(typeface)
+                    it.setTextColor(Color.BLACK)
+                }
+                message?.let {
+                    it.setTypeface(typeface)
+                    it.setTextColor(Color.BLACK)
+                    it.setTextSize(25F)
+                }
+                title?.let {
+                    it.setTypeface(typeface)
+                    it.setTextSize(45F)
+                    it.setTextColor(Color.BLACK)
+                }
+            }
+            dialog.show()
         }catch (e: Exception) {
             e.printStackTrace()
         }
     }
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 }
